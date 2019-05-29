@@ -1,30 +1,38 @@
 <template>
-   <div>
-    <v-head></v-head>
-    <v-sidebar></v-sidebar>
-   </div>
+  <div class="wrap">
+    <v-head :isCollapse="isCollapse" @setCollapse="setCollapse"></v-head>
+    <v-sidebar :isCollapse="isCollapse"></v-sidebar>
+  </div>
 </template>
 
 <script>
-import vHead from './Header.vue';
-import vSidebar from './SliderBar.vue';
+import vHead from "./Header.vue";
+import vSidebar from "./SliderBar.vue";
 export default {
-  name: 'HelloWorld',
+  props: {
+    // isCollapse: Boolean
+  },
   components: {
     vHead,
     vSidebar
   },
-  data () {
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      isCollapse: false
+    };
+  },
+  methods: {
+    setCollapse(){
+      this.isCollapse = !this.isCollapse;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 ul {
