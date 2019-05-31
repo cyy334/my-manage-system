@@ -12,7 +12,7 @@
         <i class="el-icon-bell"></i>
       </div>
       <div class="user-avator">
-        <img src="../assets/images/avator.jpg">
+        <img src="../../assets/images/avator.jpg">
       </div>
       <el-dropdown class="user-name" trigger="click">
         <span class="el-dropdown-link">

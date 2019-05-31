@@ -50,4 +50,8 @@ export default {
 .content-box.open {
   left: 200px;
 }
+.content {
+  padding: 10px;
+  box-sizing: border-box;
+}
 </style>
