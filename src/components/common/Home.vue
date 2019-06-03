@@ -46,6 +46,7 @@ export default {
   top: 70px;
   border: 1px solid #ccc;
   transition: left .3s ease-in-out;
+  background: rgb(240,240,240);
 }
 .content-box.open {
   left: 200px;
