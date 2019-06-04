@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row :gutter="20" class="mb20">
       <el-col :span="6">
         <el-card class="box-card mb20" shadow="hover">
           <div class="user-info">
@@ -70,7 +70,7 @@
         <el-card class="box-card todos" shadow="hover">
           <div slot="header" class="clearfix">
             <span>待办事项</span>
-            <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+            <el-button @click="addTodos" style="float: right; padding: 3px 0" type="text">添加</el-button>
           </div>
           <el-table
             ref="multipleTable"
@@ -80,7 +80,7 @@
             :show-header="false"
             @selection-change="handleSelectionChange"
             font-size="14px"
-            height="282px"
+            height="294px"
           >
             <el-table-column width="55">
               <template slot-scope="scope">
@@ -88,9 +88,12 @@
               </template>
             </el-table-column>
             <el-table-column>
-              <!-- 有的时候你希望提供的组件带有一个可从子组件获取数据的可复用的插槽。 -->
+              <!-- slot-scope="scope" 有的时候你希望提供的组件带有一个可从子组件获取数据的可复用的插槽。 -->
               <template slot-scope="scope">
-                <div class="todo-item" :class="{'todo-item-done':scope.row.checked}">{{ scope.row.title }}</div>
+                <div
+                  class="todo-item"
+                  :class="{'todo-item-done':scope.row.checked}"
+                >{{ scope.row.title }}</div>
               </template>
             </el-table-column>
             <el-table-column width="150">
@@ -107,10 +110,25 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-row :gutter="20"  class="mb20">
+      <el-col  :span="12" >
+        <el-card shadow="hover" :body-style="{padding: '10px'}">
+            <ve-histogram :data="chartData"></ve-histogram>
+        </el-card>
+        
+      </el-col>
+      <el-col  :span="12">
+        <el-card shadow="hover" :body-style="{padding: '10px'}">
+          <ve-line :data="chartData" ></ve-line>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
 export default {
+  component: {
+  },
   data() {
     return {
       todos: [
@@ -143,6 +161,23 @@ export default {
           checked: false
         }
       ],
+      chartData: {
+         columns: ['日期', '访问量'],
+            rows: [
+              { '日期': '1月', '访问量': 482 },
+              { '日期': '2月', '访问量': 1223 },
+              { '日期': '3月', '访问量': 2123 },
+              { '日期': '4月', '访问量': 4123 },
+              { '日期': '5月', '访问量': 3123 },
+              { '日期': '6月', '访问量': 3158 },
+              { '日期': '7月', '访问量': 3123 },
+              { '日期': '8月', '访问量': 2123 },
+              { '日期': '9月', '访问量': 4123 },
+              { '日期': '10月', '访问量': 3123 },
+              { '日期': '11月', '访问量': 7123 },
+              { '日期': '12月', '访问量': 4860 }
+            ]
+      },
       multipleSelection: []
     };
   },
@@ -156,24 +191,79 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    addTodos() {
+      this.$prompt("请输入待办事项", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnPressEscape: true
+      })
+        .then(val => {
+          if (val.value != null) {
+            this.todos.unshift({
+              title: val.value,
+              checked: false
+            });
+            this.$notify({
+              title: "添加成功",
+              type: "success",
+              position: "top-right",
+              duration: 2000
+            });
+          } else {
+            this.$notify({
+              title: "请输入内容",
+              type: "warning",
+              position: "top-right",
+              duration: 2000
+            });
+          }
+        })
+        .catch(() => {});
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(this.multipleSelection);
     },
     handleEdit(index, row) {
-      console.log(index, row);
-      console.log(this.$prompt);
-       this.$prompt('请输入待办事项', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputErrorMessage: '邮箱格式不正确',
+      this.$prompt("编辑事项", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
         closeOnPressEscape: true
-      }).then((val)=>{
-        // this.todos = this.todos[index].title = val;
-      });
+      })
+        .then(msg => {
+          if (msg.value == null) {
+            this.$notify({
+              title: "请输入内容",
+              type: "warning",
+              position: "top-right",
+              duration: 2000
+            });
+          } else {
+            this.todos[index].title = msg.value;
+            this.$notify({
+              title: "修改成功",
+              type: "success",
+              position: "top-right",
+              duration: 2000
+            });
+          }
+        })
+        .catch(() => {});
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      this.$alert("确认删除吗?", {
+        closeOnPressEscape: true
+      })
+        .then(() => {
+          this.todos.splice(index, 1);
+          this.$notify({
+            title: "删除成功",
+            type: "success",
+            position: "top-right",
+            duration: 2000
+          });
+        })
+        .catch(val => {});
     }
   }
 };
@@ -215,7 +305,7 @@ export default {
 .pre-place span {
   margin-left: 70px;
 }
-.box-card.mb20 {
+.mb20 {
   margin-bottom: 20px;
 }
 .card-count {

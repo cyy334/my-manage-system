@@ -41,18 +41,23 @@ export default {
 <style scoped>
 .content-box {
   position: absolute;
+  height: 100%;
   left: 64px;
   right: 0;
   top: 70px;
   border: 1px solid #ccc;
   transition: left .3s ease-in-out;
   background: rgb(240,240,240);
+  
 }
 .content-box.open {
   left: 200px;
 }
 .content {
   padding: 10px;
+  height: 100%;
   box-sizing: border-box;
+  overflow-y: scroll;
+  padding-bottom: 120px;
 }
 </style>
