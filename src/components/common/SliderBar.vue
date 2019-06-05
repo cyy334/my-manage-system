@@ -10,6 +10,7 @@
       active-text-color="#20a0ff"
       background-color="#324157"
       unique-opened
+      router
     >
       <template v-for="item in items">
 
@@ -59,7 +60,7 @@ export default {
       items: [
         {
           icon: "el-icon-umpxiazai45",
-          index: "dashboard",
+          index: "homePage",
           title: "系统首页"
         },
         {
@@ -155,6 +156,10 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    onRouters() {
+      console.log(this.$route.path.replace("/",""))
+      return this.$route.path.replace("/","");
     }
   }
 };
