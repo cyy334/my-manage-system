@@ -10,6 +10,8 @@
         <el-select v-model="selectWords" placeholder="选择省份" size="mini">
           <el-option key="1" label="广东省" value="广东省"></el-option>
           <el-option key="2" label="湖南省" value="湖南省"></el-option>
+          <el-option key="3" label="河南省" value="河南省"></el-option>
+          <el-option key="4" label="浙江省" value="浙江省"></el-option>
         </el-select>
         <el-input size="mini" class="search-input" v-model="keywords" placeholder="请输入内容"></el-input>
         <el-button size="mini" type="primary">搜索</el-button>
@@ -93,43 +95,7 @@ export default {
         name: "",
         address: ""
       },
-      tableList: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
+      tableList: [],
       options: [
         {
           value: "选项1",
@@ -157,6 +123,28 @@ export default {
   created() {
     this.getData();
   },
+  computed: {
+    data() {
+      console.log("computed执行了");
+      return this.tableList.filter( item =>{
+        if(item.address.indexOf(this.selectWords) > -1 ){
+          console.log(item);
+          return item;
+        }
+      });
+    }
+  },
+  watch: {
+    selectWords(val) {
+      console.log("执行watch");
+      let newData = this.tableList.filter( item =>{
+        if(item.address.indexOf(val) > -1 ){
+          return item;
+        }
+      });
+      this.tableList = newData;
+    }
+  },
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -178,7 +166,7 @@ export default {
       }
       this.$message.error('删除了' + str);
       this.multipleSelection = [];
-      console.log(this.delList)
+      
     },
     handleDel(msg) {
       this.nowId = msg.$index;
@@ -197,11 +185,10 @@ export default {
       }
       this.nowId = msg.$index;
       this.editDialogVisible = true;
+      console.log(this.selectWords)
     },
     saveEditData() {
       this.$set(this.tableList, this.nowId, this.form);
-      console.log(this.tableList[this.nowId]);
-      console.log(this.form);
       this.editDialogVisible = false;
       this.$message.success('修改成功');
     },
