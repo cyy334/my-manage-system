@@ -12,15 +12,22 @@
           <el-option key="2" label="湖南省" value="湖南省"></el-option>
           <el-option key="3" label="河南省" value="河南省"></el-option>
           <el-option key="4" label="浙江省" value="浙江省"></el-option>
+          <el-option key="5" label="河北省" value="河北省"></el-option>
+          <el-option key="6" label="黑龙江省" value="黑龙江省"></el-option>
+          <el-option key="7" label="贵州省" value="贵州省"></el-option>
+          <el-option key="8" label="吉林省" value="吉林省"></el-option>
+          <el-option key="9" label="云南省" value="云南省"></el-option>
+          <el-option key="10" label="四川省" value="四川省"></el-option>
         </el-select>
-        <el-input size="mini" class="search-input" v-model="keywords" placeholder="请输入内容"></el-input>
+        <el-input size="mini" class="search-input" v-model="keywords"  placeholder="请输入内容"></el-input>
         <el-button size="mini" type="primary">搜索</el-button>
       </div>
       <el-table
         ref="multipleTable"
-        :data="tableList"
+        :data="data"
         tooltip-effect="dark"
         style="width: 100%"
+        v-loading="loading"
         border
         class="mb20"
         @selection-change="handleSelectionChange"
@@ -74,7 +81,7 @@
           <el-button @click="delDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="deleteRow">确 定</el-button>
         </span>
-      </el-dialog>>
+      </el-dialog>
     <!-- 删除弹出框 -->
   </div>
 </template>
@@ -89,6 +96,7 @@ export default {
       editDialogVisible: false,
       delDialogVisible: false,
       nowId: 0,
+      loading: false,
       delList: [],
       form: {
         time: "",
@@ -123,26 +131,29 @@ export default {
   created() {
     this.getData();
   },
+  /*
+   * computed用来监控自己定义的变量，该变量不在data里面声明，
+   * 直接在computed里面定义，然后就可以在页面上进行双向数据绑定展示出结果或者用作其他处理；
+   */
   computed: {
     data() {
-      console.log("computed执行了");
       return this.tableList.filter( item =>{
-        if(item.address.indexOf(this.selectWords) > -1 ){
-          console.log(item);
+        let is_del = false;
+        for (let i = 0; i < this.delList.length; i++) {
+            if (item.name === this.delList[i].name) {
+                is_del = true;
+                break;
+            }
+        }
+        if(!is_del){
+          if(
+          item.address.indexOf(this.selectWords) > -1  &&
+          (item.name.indexOf(this.keywords) > -1 || item.address.indexOf(this.keywords) > -1)
+          ){
           return item;
         }
-      });
-    }
-  },
-  watch: {
-    selectWords(val) {
-      console.log("执行watch");
-      let newData = this.tableList.filter( item =>{
-        if(item.address.indexOf(val) > -1 ){
-          return item;
         }
       });
-      this.tableList = newData;
     }
   },
   methods: {
@@ -157,6 +168,7 @@ export default {
       let nweData = row.address.replace(/\s{1}/g, "-");
       return nweData;
     },
+    //批量删除
     delAll() {
       const length = this.multipleSelection.length;
       this.delList = this.delList.concat(this.multipleSelection);
@@ -168,15 +180,18 @@ export default {
       this.multipleSelection = [];
       
     },
+    //删除
     handleDel(msg) {
       this.nowId = msg.$index;
       this.delDialogVisible = true;
     },
+    //删除一条数据
     deleteRow() {
       this.tableList.splice(this.nowId,1);
       this.delDialogVisible = false;
       this.$message.success('删除成功');
     },
+    //编辑
     handleEditor(msg) {
       this.form = {
         date: msg.row.date,
@@ -185,20 +200,23 @@ export default {
       }
       this.nowId = msg.$index;
       this.editDialogVisible = true;
-      console.log(this.selectWords)
     },
+    //保存编辑
     saveEditData() {
       this.$set(this.tableList, this.nowId, this.form);
       this.editDialogVisible = false;
       this.$message.success('修改成功');
     },
+    //请求数据
     getData() {
+      this.loading = true;
       this.$axios
         .post("/ms/table/list", {
           page: this.currentPage
         })
         .then(res => {
           this.tableList = res.data.list;
+          this.loading = false;
         });
     }
   }
