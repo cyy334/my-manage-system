@@ -3,7 +3,7 @@
     <bread-crumb></bread-crumb>
     <div class="container">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="未读消息" name="first">
+        <el-tab-pane :label="`未读消息(${unread.length})`" name="first">
           <el-table :show-header="false" :data="unread">
             <el-table-column>
               <template slot-scope="scope">
@@ -22,7 +22,7 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="已读消息" name="second">
+        <el-tab-pane :label="`已读消息(${read.length})`" name="second">
           <el-table :show-header="false" :data="read">
             <el-table-column>
               <template slot-scope="scope">
@@ -41,7 +41,7 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="回收站" name="third">
+        <el-tab-pane :label="`回收站(${recycle.length})`" name="third">
           <el-table :show-header="false" :data="recycle">
             <el-table-column>
               <template slot-scope="scope">
@@ -132,6 +132,9 @@ export default {
         const resMsg = this.recycle.splice(msg,1);
         this.read = resMsg.concat(this.read);
     }
+  },
+  computed: {
+    
   }
 };
 </script>
