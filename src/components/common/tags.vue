@@ -11,7 +11,7 @@ export default {
 <style>
     .tags {
         width: 100%;
-        height: 50px;
+        height: 30px;
         background: #ccc;
     }
 </style>

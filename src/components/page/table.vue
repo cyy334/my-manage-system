@@ -1,9 +1,6 @@
 <template>
   <div class="table">
-    <el-breadcrumb separator="/" class="crumb">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-    </el-breadcrumb>
+    <bread-crumb></bread-crumb>
     <div class="container">
       <div class="hanle-box mb20">
         <el-button size="mini" type="primary" @click="delAll">批量删除</el-button>
@@ -19,7 +16,7 @@
           <el-option key="9" label="云南省" value="云南省"></el-option>
           <el-option key="10" label="四川省" value="四川省"></el-option>
         </el-select>
-        <el-input size="mini" class="search-input" v-model="keywords"  placeholder="请输入内容"></el-input>
+        <el-input size="mini" class="search-input" v-model="keywords" placeholder="请输入内容"></el-input>
         <el-button size="mini" type="primary">搜索</el-button>
       </div>
       <el-table
@@ -58,7 +55,13 @@
     <el-dialog title="提示" :visible.sync="editDialogVisible" width="30%">
       <el-form :model="form" label-position="left" label-width="50px">
         <el-form-item label="日期">
-          <el-date-picker value-format="yyyy-MM-dd" v-model="form.date" type="date" style="width: 100%" placeholder="选择日期"></el-date-picker>
+          <el-date-picker
+            value-format="yyyy-MM-dd"
+            v-model="form.date"
+            type="date"
+            style="width: 100%"
+            placeholder="选择日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -75,18 +78,22 @@
     <!-- 编辑弹出框 -->
 
     <!-- 删除弹出框 -->
-      <el-dialog title="提示" center :visible.sync="delDialogVisible" width="20%">
-        <div class="del-dialog">确认删除吗？</div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="delDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="deleteRow">确 定</el-button>
-        </span>
-      </el-dialog>
+    <el-dialog title="提示" center :visible.sync="delDialogVisible" width="20%">
+      <div class="del-dialog">确认删除吗？</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 删除弹出框 -->
   </div>
 </template>
 <script>
+import breadCrumb from './breadcrumb'
 export default {
+  components: {
+    breadCrumb
+  },
   data() {
     return {
       keywords: "",
@@ -137,21 +144,22 @@ export default {
    */
   computed: {
     data() {
-      return this.tableList.filter( item =>{
+      return this.tableList.filter(item => {
         let is_del = false;
         for (let i = 0; i < this.delList.length; i++) {
-            if (item.name === this.delList[i].name) {
-                is_del = true;
-                break;
-            }
+          if (item.name === this.delList[i].name) {
+            is_del = true;
+            break;
+          }
         }
-        if(!is_del){
-          if(
-          item.address.indexOf(this.selectWords) > -1  &&
-          (item.name.indexOf(this.keywords) > -1 || item.address.indexOf(this.keywords) > -1)
-          ){
-          return item;
-        }
+        if (!is_del) {
+          if (
+            item.address.indexOf(this.selectWords) > -1 &&
+            (item.name.indexOf(this.keywords) > -1 ||
+              item.address.indexOf(this.keywords) > -1)
+          ) {
+            return item;
+          }
         }
       });
     }
@@ -172,13 +180,12 @@ export default {
     delAll() {
       const length = this.multipleSelection.length;
       this.delList = this.delList.concat(this.multipleSelection);
-      let str = '';
+      let str = "";
       for (let i = 0; i < length; i++) {
-        str += this.multipleSelection[i].name + ' ';
+        str += this.multipleSelection[i].name + " ";
       }
-      this.$message.error('删除了' + str);
+      this.$message.error("删除了" + str);
       this.multipleSelection = [];
-      
     },
     //删除
     handleDel(msg) {
@@ -187,9 +194,9 @@ export default {
     },
     //删除一条数据
     deleteRow() {
-      this.tableList.splice(this.nowId,1);
+      this.tableList.splice(this.nowId, 1);
       this.delDialogVisible = false;
-      this.$message.success('删除成功');
+      this.$message.success("删除成功");
     },
     //编辑
     handleEditor(msg) {
@@ -197,24 +204,24 @@ export default {
         date: msg.row.date,
         name: msg.row.name,
         address: msg.row.address
-      }
+      };
       this.nowId = msg.$index;
       this.editDialogVisible = true;
     },
     //保存编辑
     saveEditData() {
       this.$set(this.tableList, this.nowId, this.form);
-      this.editDialogVisible = false;
-      this.$message.success('修改成功');
+      this.editDialogVisible   
+      
+      = false;
+      this.$message.success("修改成功");
     },
     //请求数据
     getData() {
       this.loading = true;
-      this.$axios
-        .post("/ms/table/list", {
+      this.$axios.post("/ms/table/list", {
           page: this.currentPage
-        })
-        .then(res => {
+        }).then(res => {
           this.tableList = res.data.list;
           this.loading = false;
         });
@@ -223,15 +230,6 @@ export default {
 };
 </script>
 <style>
-.crumb {
-  line-height: 40px;
-}
-.table .container {
-  padding: 20px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
 .table .search-input {
   display: inline-block;
   width: 300px;

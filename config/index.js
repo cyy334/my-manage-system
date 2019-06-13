@@ -14,6 +14,13 @@ module.exports = {
       '/ms': {
         target: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128', //目标接口域名
         changeOrigin: true, //是否跨域
+      },
+      '/api': {
+        target: 'https://apps.game.qq.com/cmc/cross',  //目标接口域名
+        changeOrigin: true,  //是否跨域
+        pathRewrite: {
+          '^/api': '/api'   //重写接口
+        }
       }
     },
 
