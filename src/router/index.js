@@ -51,7 +51,7 @@ export default new Router({
                 {
                     path: "/upload",
                     component: resolve => require(['../components/page/upload'], resolve),
-                    meta: { title: "文件上传" }
+                    meta: { title: "图片上传" }
                 },
                 {
                     path: "/icon",

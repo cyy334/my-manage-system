@@ -37,12 +37,6 @@ export default {
 };
 </script>
 <style>
-.plugins-tips {
-    line-height: 40px;
-    background: #ccc;
-    text-indent: 10px;
-    margin-bottom: 10px;
-}
 .ql-editor{
     height:400px;
 }
