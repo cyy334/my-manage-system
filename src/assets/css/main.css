@@ -8,6 +8,15 @@ html,body {
     height: 100%;
 }
 
+a {
+    color: #409eff;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
 body {
     font-family: 'PingFang SC', "Helvetica Neue", Helvetica, "microsoft yahei", arial, STHeiTi, sans-serif;
     overflow-y: hidden;

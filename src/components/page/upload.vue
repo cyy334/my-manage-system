@@ -33,7 +33,7 @@
         >vue-cropperjs</a>
       </div>
       <div class="crop-img">
-        <img src="https://k.zol-img.com.cn/sjbbs/7692/a7691501_s.jpg">
+        <img :src="cropImg">
         <div class="crop-btn">
           选择图片
           <input @change="setImg" type="file">
@@ -45,7 +45,13 @@
           :src="imgSrc"
           :cropmove="cropImage"
           style="width:100%;height:300px;"
+          :ready="cropImage" 
+          :zoom="cropImage" 
         ></vue-cropper>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancelCrop">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
       </el-dialog>
       
     </div>
@@ -63,24 +69,46 @@ export default {
   data() {
     return {
       imgSrc: "",
-      dialogVisible: true
+      dialogVisible: false,
+      cropImg: '',
+      defaultSrc: require('../../assets/images/avator.jpg')
     };
   },
   methods: {
     setImg(ev) {
-      
       const file = ev.target.files[0];
+      //判断上传的是否为图片
       if (!file.type.includes("image/")) {
         return;
       }
-      console.log("执行了")
+      //实例化FileReader对象
       const reader = new FileReader();
       reader.onload = (event) => {
-        console.log(event)
         this.dialogVisible = true;
+        //存储选择的图片
+        this.imgSrc = event.target.result;
+        console.log(this.$refs.cropper)
+        //replace: 替换图像的src并重建裁剪器。
+        this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
       };
+
+      //将传进来的图片转换成base64编码的字符串
+      reader.readAsDataURL(file);
     },
-    cropImage() {}
+    cancelCrop(){
+      this.dialogVisible = false;
+      this.cropImg = this.defaultSrc;
+    },
+    cropImage() {
+      //getCroppedCanvas: 获取绘制裁剪图像的画布
+       console.log(this.cropImg);
+       //toDataURL: 将图片转换成base64编码的字符串
+       this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
+      
+    },
+  },
+  created() {
+    this.cropImg = this.defaultSrc;
   }
 };
 </script>

@@ -66,7 +66,7 @@ export default new Router({
                 {
                     path: "/drags",
                     component: resolve => require(['../components/page/dragList'], resolve),
-                    meta: { title: "拖拽列表" }
+                    meta: { title: "拖拽组件" }
                 },
                 {
                     path: "/dialog",
